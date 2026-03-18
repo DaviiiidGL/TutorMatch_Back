@@ -9,8 +9,11 @@ namespace TutorMatch.Models
         [Key][DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid OfferId { get; set; }
 
-        [ForeignKey("TutorProfile")]
-        public Guid TutorId { get; set; }
+        [Required]
+        public Guid TutorProfileId { get; set; }
+
+        [ForeignKey("TutorProfileId")]
+        public TutorProfile TutorProfile { get; set; }
 
         [Required]
         public Subject Subject { get; set; }

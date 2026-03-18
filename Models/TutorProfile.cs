@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Identity;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace TutorMatch.Models
@@ -8,10 +9,13 @@ namespace TutorMatch.Models
         [Key][DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid TutorId { get; set; }
 
-        [ForeignKey("User")]
-        public Guid UserId { get; set; }
+        [Required]
+        public string UserId { get; set; }
 
-        public Availability[] Availability { get; set; }
+        [ForeignKey("UserId")]
+        public IdentityUser UserProfile { get; set; }
+
+        public List<Availability> Availability { get; set; }
 
         [Required][MinLength(10)][MaxLength(10)]
         public string Bio { get; set; }
