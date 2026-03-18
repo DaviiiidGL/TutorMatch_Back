@@ -33,6 +33,5 @@ namespace TutorMatch.Models
 
         public string CiudadPais { get; set; }
 
-        public bool isActive { get; set; }
     }
 }
