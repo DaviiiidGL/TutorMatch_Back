@@ -15,7 +15,7 @@ namespace TutorMatch.Models
         [ForeignKey("UserId")]
         public IdentityUser UserProfile { get; set; }
 
-        public Availability Availability { get; set; }
+        public List<Availability> Availability { get; set; }
 
         [Required][MinLength(10)][MaxLength(10)]
         public string Bio { get; set; }
