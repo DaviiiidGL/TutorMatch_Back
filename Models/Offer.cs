@@ -27,5 +27,6 @@ namespace TutorMatch.Models
         [Required]
         public string Description { get; set; }
 
+        public bool isActive { get; set; }
     }
 }
