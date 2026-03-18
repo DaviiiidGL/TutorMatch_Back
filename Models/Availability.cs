@@ -7,22 +7,24 @@ namespace TutorMatch.Models
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public Guid TutorId { get; set; }
+        public Guid AvailabilityId { get; set; }  
 
-        [ForeignKey("TutorProfile")]
+        [Required]
         public Guid TutorProfileId { get; set; }
+
+        [ForeignKey("TutorProfileId")]
+        public TutorProfile TutorProfile { get; set; }
 
         [Required]
         public DayOfWeek DayOfWeek { get; set; }
 
         [Required]
-        public TimeOnly StarTime {  get; set; }
+        public TimeOnly StarTime { get; set; }   
 
         [Required]
         public TimeOnly EndTime { get; set; }
 
         [Required]
         public bool IsRecurring { get; set; }
-
     }
 }
