@@ -40,6 +40,9 @@ namespace TutorMatch.Models
 
         public Conversation Conversation { get; set; }
 
+        [ForeignKey("OfferId")]
+        public Guid ConversationId { get; set; }
+
         [Required]
         public bool isActive { get; set; } = true;
     }
