@@ -39,5 +39,8 @@ namespace TutorMatch.Models
         public Review? Review { get; set; }
 
         public Conversation Conversation { get; set; }
+
+        [Required]
+        public bool isActive { get; set; } = true;
     }
 }

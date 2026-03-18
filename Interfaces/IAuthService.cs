@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace ApiConciertos.Interfaces
+namespace TutorMatch.Interfaces
 {
     public interface IAuthService
     {

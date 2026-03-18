@@ -4,6 +4,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using TutorMatch.Interfaces;
+using TutorMatch.Models;
 
 namespace TutorMatch.Services
 {
