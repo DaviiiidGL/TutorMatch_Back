@@ -11,7 +11,7 @@ namespace TutorMatch.Models
         [ForeignKey("User")]
         public Guid UserId { get; set; }
 
-        public Availability Availability { get; set; }
+        public Availability[] Availability { get; set; }
 
         [Required][MinLength(10)][MaxLength(10)]
         public string Bio { get; set; }
@@ -29,5 +29,6 @@ namespace TutorMatch.Models
 
         public string CiudadPais { get; set; }
 
+        public bool isActive { get; set; }
     }
 }

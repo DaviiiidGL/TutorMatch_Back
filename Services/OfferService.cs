@@ -1,4 +1,9 @@
-﻿namespace TutorMatch_Back.Services
+﻿using TutorMatch.Interfaces;
+using TutorMatch.Models;
+using TutorMatch.DAO;
+using Microsoft.EntityFrameworkCore;
+
+namespace TutorMatch.Services
 {
     public class OfferService : IOfferService
     {
@@ -13,19 +18,18 @@
 
         public async Task<List<Offer>> GetAll()
         {
-            return await _context.Offers.Where(e => e.isActive == 1).ToListAsync();
+            return await _context.Offers.Where(e => e.isActive == true).ToListAsync();
         }
 
         public async Task<List<Offer>> listByTutor(Guid id)
         {
-            return await _context.Offers.Where(e => e.isActive == 1 && e.TutorId==id).ToListAsync();
+            return await _context.Offers.Where(e => e.isActive && e.TutorId == id).ToListAsync();
         }
-
 
         public async Task<Offer> Create(Offer newOffer)
         {
             //Agregamos el registro a la lista
-            _context.Offerts.Add(newOffer);
+            _context.Offers.Add(newOffer);
             await _context.SaveChangesAsync();
             return newOffer;
         }
@@ -34,7 +38,7 @@
         {
             //validar la existencia de un ente supremo
             var offerExiste = await getById(id);
-            if (eventoExiste == null) return false;
+            if (offerExiste == null) return false;
 
             offerExiste.DurationOptions = editedOffer.DurationOptions;
             offerExiste.Description = editedOffer.Description;
@@ -51,13 +55,13 @@
             var existe = await getById(id);
             if (existe == null) return false;
 
-            existe.isActive = existe.isActive == 1 ? 0 : 1;
+            existe.isActive = existe.isActive == true ? false : true;
 
             await _context.SaveChangesAsync();
 
             return true;
         }
 
-
+        public async Task<Offer> getById(Guid id) => await _context.Offers.FindAsync(id);
     }
 }

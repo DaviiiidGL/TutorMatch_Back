@@ -1,9 +1,9 @@
-﻿using TutorMatch_Back.Models;
+﻿using TutorMatch.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace TutorMatch_Back.DAO
+namespace TutorMatch.DAO
 {
     public class ApplicationDbContext : IdentityDbContext<IdentityUser>
     {
@@ -15,10 +15,10 @@ namespace TutorMatch_Back.DAO
         //Los DB Set nos ayudan a mapear las clases como Entidades
         //Es decir que Entity Framework lee este archivo para tomar del modelo el esquema de las tablas
 
-        public DbSet<Offers> Offer { get; set; }
-        public DbSet<TutorProfiles> TutorProfile { get; set; }
-        public DbSet<Availability> Availability { get; set; }
-        public DbSet<Review> Review { get; set; }
+        public DbSet<Offer> Offers { get; set; }
+        public DbSet<TutorProfile> TutorProfiles { get; set; }
+        public DbSet<Availability> Availabilities { get; set; }
+        public DbSet<Review> Reviews { get; set; }
         public DbSet<IdentityUser> Users { get; set; }
 
     }

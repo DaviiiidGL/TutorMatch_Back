@@ -1,9 +1,9 @@
-﻿using TutorMatch_Back.Interfaces;
-using TutorMatch_Back.Models;
+﻿using TutorMatch.Interfaces;
+using TutorMatch.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace TutorMatch_Back.Controllers
+namespace TutorMatch.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
@@ -41,7 +41,7 @@ namespace TutorMatch_Back.Controllers
         public async Task<IActionResult> Create([FromBody] TutorProfile newTutor)
         {
 
-            var createdTutor = await _eventTutor.Create(newTutor);
+            var createdTutor = await _tutorService.Create(newTutor);
             return CreatedAtAction(nameof(getById), new { id = createdTutor.TutorId }, createdTutor);
         }
 
@@ -57,9 +57,5 @@ namespace TutorMatch_Back.Controllers
         {
             return await _tutorService.ChangeStatus(id) ? Ok("Se ha cambiado el estado del tutor") : NotFound();
         }
-
-
-
-
     }
 }

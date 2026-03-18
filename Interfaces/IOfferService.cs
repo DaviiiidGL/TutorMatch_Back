@@ -1,8 +1,8 @@
 ﻿using System;
 
-using TutorMatch_Back.Models;
+using TutorMatch.Models;
 
-namespace TutorMatch_Back.Interfaces
+namespace TutorMatch.Interfaces
 {
     public interface IOfferService
     {
@@ -14,6 +14,8 @@ namespace TutorMatch_Back.Interfaces
 
         Task<bool> Update(Guid id, Offer offer);
 
-        Task<bool> ChangeStatud(Guid id);
+        Task<bool> ChangeStatus(Guid id);
+
+        Task<Offer?> getById(Guid id);
     }
 }
