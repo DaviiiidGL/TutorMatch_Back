@@ -11,7 +11,6 @@ namespace TutorMatch.Interfaces
         Task<Booking> Create(Booking Booking);
         Task<bool> Update(Guid id, Booking booking);
         Task<bool> Accept(Guid id);
-
         Task<bool> Decline(Guid id);
     }
 }

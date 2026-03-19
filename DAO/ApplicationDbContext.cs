@@ -60,7 +60,13 @@ namespace TutorMatch.DAO
             builder.Entity<Booking>()
                 .HasOne(b => b.Conversation) // Asume public Conversation Conversation {get;set;} en Booking
                 .WithMany()
-                .HasForeignKey(b => b.Conversation)
+                .HasForeignKey(b => b.ConversationId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<Message>()
+                .HasOne(c => c.Sender) // Asume que tienes una propiedad public TutorProfile TutorProfile {get;set;}
+                .WithMany() // O .WithMany(t => t.Conversations) si la colección existe en TutorProfile
+                .HasForeignKey(c => c.SenderId)
                 .OnDelete(DeleteBehavior.Restrict);
         }
 

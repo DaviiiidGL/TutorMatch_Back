@@ -82,7 +82,20 @@ app.MapGet("/db-check", async (ApplicationDbContext context) =>
     }
 });
 
+using (var scope = app.Services.CreateScope())
+{
+    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
 
+    string[] roles = { "TUTOR", "STUDENT", "ADMIN" }; // todos tus roles
+
+    foreach (var role in roles)
+    {
+        if (!await roleManager.RoleExistsAsync(role))
+        {
+            await roleManager.CreateAsync(new IdentityRole(role));
+        }
+    }
+}
 
 
 app.Run();

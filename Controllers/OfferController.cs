@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 using TutorMatch.Interfaces;
 using TutorMatch.Models;
 using TutorMatch.Services;
@@ -8,7 +9,6 @@ namespace TutorMatch.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize(Roles = "Admin")]
     public class OfferController : Controller
     {
         private readonly IOfferService _offerService;
@@ -20,7 +20,7 @@ namespace TutorMatch.Controllers
         {
             return View();
         }
-
+        
         [HttpGet]
         [AllowAnonymous]
         public async Task<IActionResult> GetAll() => Ok(await _offerService.GetAll());
@@ -33,10 +33,10 @@ namespace TutorMatch.Controllers
             return offer != null ? Ok(offer) : NotFound();
         }
 
-        [HttpPost]
+        [HttpGet("{id}")]
+        [Authorize(Roles = "Tutor")]
         public async Task<IActionResult> Create([FromBody] Offer newOffer)
         {
-
             var createdOffer = await _offerService.Create(newOffer);
             return CreatedAtAction(nameof(getById), new { id = createdOffer.OfferId }, createdOffer);
         }
@@ -53,5 +53,25 @@ namespace TutorMatch.Controllers
         {
             return await _offerService.ChangeStatus(id) ? Ok("Se ha cambiado el estado de la oferta") : NotFound();
         }
+
+        //[HttpGet("{id}")]
+        //[Authorize(Roles = "Tutor")]
+        //public async Task<IActionResult> getByTutorId(Guid id)
+        //{
+            // Capturamos el id del token o del Identity
+            // Este Id es necesario para validar si ese usuario o JWT si corresponde al cliente
+            // con esto se evita un error de vulnerabildiad
+            //string UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            // se envía como argumento el id del cliente que pasa por parámetro en la URL get
+            // Y se envía el id de la identidad para corrobar que si corresponda
+            // var ticket = await _Service.getByClientId(id, UserId);
+            //Se refactoriza condicion por una operación ternaria o si corto
+            // return ticket != null ? Ok(ticket) : NotFound();
+            //if (evento == null)
+            //{
+            //    return NotFound("No existe el evento");
+            //}
+            //return Ok(evento);
+       // }
     }
 }
