@@ -1,7 +1,8 @@
-﻿using TutorMatch.Interfaces;
-using TutorMatch.Models;
+﻿using Microsoft.EntityFrameworkCore;
+using System.Net.Sockets;
 using TutorMatch.DAO;
-using Microsoft.EntityFrameworkCore;
+using TutorMatch.Interfaces;
+using TutorMatch.Models;
 
 namespace TutorMatch.Services
 {
@@ -26,14 +27,18 @@ namespace TutorMatch.Services
             return await _context.Offers.Where(e => e.isActive && e.TutorProfileId == id).ToListAsync();
         }
 
+
         public async Task<Offer> Create(Offer newOffer)
         {
+            int tutorExist = _context.TutorProfiles.Where(e => e.TutorId == newOffer.TutorProfileId).Count();
+            if (tutorExist == 0) throw new Exception("Event not found");
+
             //Agregamos el registro a la lista
             _context.Offers.Add(newOffer);
             await _context.SaveChangesAsync();
             return newOffer;
         }
-
+        
         public async Task<bool> Update(Guid id, Offer editedOffer)
         {
             //validar la existencia de un ente supremo
