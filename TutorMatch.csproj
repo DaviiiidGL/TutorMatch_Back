@@ -14,7 +14,6 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.5" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="10.0.5">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
@@ -22,12 +21,13 @@
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.1" />
     <PackageReference Include="Scalar.AspNetCore" Version="2.13.6" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="10.0.5" />
-    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.16.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Migrations\" />
+    <Folder Include="Interfaces\\" />
     <Folder Include="Migrations\\" />
+    <Folder Include="Models\\DTOs\\" />
+    <Folder Include="Services\\" />
   </ItemGroup>
 
 </Project>
