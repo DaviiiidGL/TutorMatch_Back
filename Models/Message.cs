@@ -13,13 +13,13 @@ namespace TutorMatch.Models
         public Guid ConversationId { get; set; }
 
         [ForeignKey("ConversationId")]
-        public Conversation Conversation { get; set; }
+        public Conversation? Conversation { get; set; }
 
         [Required]
         public string SenderId { get; set; }
 
         [ForeignKey("SenderId")]
-        public IdentityUser Sender { get; set; }
+        public IdentityUser? Sender { get; set; }
 
         [Required][MaxLength(100)]
         public string Content { get; set; }

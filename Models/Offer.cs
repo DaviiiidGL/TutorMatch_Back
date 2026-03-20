@@ -13,7 +13,7 @@ namespace TutorMatch.Models
         public Guid TutorProfileId { get; set; }
 
         [ForeignKey("TutorProfileId")]
-        public TutorProfile TutorProfile { get; set; }
+        public TutorProfile? TutorProfile { get; set; }
 
         [Required]
         public Subject Subject { get; set; }
@@ -27,5 +27,7 @@ namespace TutorMatch.Models
         [Required]
         public string Description { get; set; }
 
+        [Required]
+        public bool isActive { get; set; } = true;
     }
 }
