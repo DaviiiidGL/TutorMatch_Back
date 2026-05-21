@@ -46,6 +46,8 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IBookingService, BookingService>();
 builder.Services.AddScoped<IOfferService, OfferService>();
 builder.Services.AddScoped<ITutorProfileService, TutorProfileService>();
+builder.Services.AddScoped<IReviewService, ReviewService>();
+builder.Services.AddScoped<IMessageService, MessageService>();
 
 // Añadir los servicios aquí
 
@@ -111,5 +113,20 @@ using (var scope = app.Services.CreateScope())
     }
 }
 
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    try
+    {
+        var context = services.GetRequiredService<TutorMatch.DAO.ApplicationDbContext>();
+        context.Database.Migrate();
+
+        await TutorMatch.Data.DbSeeder.SeedAsync(services);
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"Ocurrió un error al sembrar la base de datos: {ex.Message}");
+    }
+}
 
 app.Run();

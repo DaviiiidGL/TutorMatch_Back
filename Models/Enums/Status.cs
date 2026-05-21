@@ -5,6 +5,7 @@
         Pendiente = 0,
         Aceptada = 1,
         Rechazada = 2,
-        Finalizada = 3
+        Completed = 3,
+        Cancelled = 4  
     }
 }

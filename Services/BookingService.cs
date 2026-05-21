@@ -29,7 +29,12 @@ namespace TutorMatch.Services
 
         public async Task<Booking> Create(Booking newBooking)
         {
-            //Agregamos el registro a la lista
+            var offer = await _context.Offers.FindAsync(newBooking.OfferId);
+            if (offer == null) throw new Exception("La oferta no existe.");
+
+            bool overlaps = await isReserved(offer.TutorProfileId, newBooking.Date, newBooking.StarTime, newBooking.EndTime);
+            if (overlaps) throw new Exception("El tutor ya tiene una reserva en ese horario.");
+
             _context.Bookings.Add(newBooking);
             await _context.SaveChangesAsync();
             return newBooking;
