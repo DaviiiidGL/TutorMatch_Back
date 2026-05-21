@@ -35,6 +35,9 @@ namespace TutorMatch.Models
 
         [Required]
         public bool isActive { get; set; } = true;
-
+        public int ReviewCount { get; set; } = 0;
+        public int PenaltyScore { get; set; } = 0;
+        public int CancelCount { get; set; } = 0;
+        public bool IsHidden { get; set; } = false;
     }
 }

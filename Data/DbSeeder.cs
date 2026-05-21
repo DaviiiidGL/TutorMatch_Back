@@ -84,25 +84,26 @@ namespace TutorMatch.Data
             await context.SaveChangesAsync();
 
             // 5. Crear 40 Reservas (Bookings), 30 Mensajes y 15 Reseñas
-            var offers = await context.Offers.ToListAsync();
+            // Agregamos .Include(o => o.TutorProfile) para que no sea nulo al actualizar el rating
+            var offers = await context.Offers.Include(o => o.TutorProfile).ToListAsync();
 
             for (int k = 1; k <= 40; k++)
             {
                 var offer = offers[random.Next(offers.Count)];
 
-                var status = (k <= 20) ? Status.Aceptada : Status.Pendiente;
+                var status = (k <= 20) ? Status.Accepted : Status.Pending;
                 if (k <= 15) status = Status.Completed;
 
                 var booking = new Booking
                 {
                     BookingId = Guid.NewGuid(),
                     OfferId = offer.OfferId,
-                    StudentId = estudiantesId[random.Next(estudiantesId.Count)], // Corregido: ya no usamos Guid.Parse
+                    StudentId = estudiantesId[random.Next(estudiantesId.Count)],
                     Date = DateOnly.FromDateTime(DateTime.Now.AddDays(k)),
                     StarTime = new TimeOnly(14, 0),
                     EndTime = new TimeOnly(16, 0),
                     Status = status,
-                    Price = 35000, // Agregado para cumplir con tu modelo
+                    Price = 35000,
                     isActive = true
                 };
 
@@ -112,17 +113,27 @@ namespace TutorMatch.Data
                     var review = new Review
                     {
                         ReviewId = Guid.NewGuid(),
+                        BookingId = booking.BookingId,            // ¡Llenamos el nuevo campo!
+                        TutorId = offer.TutorProfileId,           // Sacamos el ID directamente de la oferta
+                        StudentId = booking.StudentId,            // ¡Llenamos el nuevo campo!
+                        StudentName = "Estudiante de Prueba",     // ¡Llenamos el nuevo campo!
                         Comment = "Excelente tutor, aprendí muchísimo en la clase.",
-                        ReviewCount = random.Next(4, 6)
+                        Rating = random.Next(4, 6),
+                        CreatedAt = DateTime.UtcNow
                     };
                     context.Reviews.Add(review);
                     booking.ReviewId = review.ReviewId;
 
-                    offer.TutorProfile.AverageRating = review.ReviewCount;
+                    // Actualizamos las estadísticas del tutor en el seeder
+                    if (offer.TutorProfile != null)
+                    {
+                        offer.TutorProfile.AverageRating = review.Rating;
+                        offer.TutorProfile.ReviewCount = 1;
+                    }
                 }
 
                 // Crear Conversaciones y 30 Mensajes para reservas Aceptadas/Completadas
-                if ((status == Status.Aceptada || status == Status.Completed) && k <= 30)
+                if ((status == Status.Accepted || status == Status.Completed) && k <= 30)
                 {
                     var conversation = new Conversation { ConversationId = Guid.NewGuid() };
                     context.Conversations.Add(conversation);
@@ -132,7 +143,7 @@ namespace TutorMatch.Data
                     {
                         MessageId = Guid.NewGuid(),
                         ConversationId = conversation.ConversationId,
-                        SenderId = booking.StudentId, // Agregado: el mensaje necesita saber quién lo envió
+                        SenderId = booking.StudentId,
                         Content = "Hola, confirmo nuestra clase para mañana.",
                         SentAt = DateTime.UtcNow
                     });

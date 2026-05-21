@@ -22,7 +22,7 @@ namespace TutorMatch.Services
             if (booking == null) throw new Exception("Reserva no encontrada.");
 
             // 2. Validamos la regla de negocio: Solo reservas Aceptadas
-            if (booking.Status != Status.Aceptada)
+            if (booking.Status != Status.Accepted)
                 throw new Exception("El chat solo está habilitado para sesiones Aceptadas.");
 
             // 3. Si es el primer mensaje, creamos la conversación
