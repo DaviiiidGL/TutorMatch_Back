@@ -19,9 +19,9 @@ namespace TutorMatch.Services
             return await _context.TutorProfiles.Where(e => e.isActive == true).ToListAsync();
         }
 
-        public async Task<List<TutorProfile>> listBySubject(String subject)
+        public async Task<List<TutorProfile>> listBySubject(Subject subject)
         {
-        return await _context.TutorProfiles.Where(e => e.isActive == true && e.Offers.Any(p => p.Subject.Equals(subject) == true)).ToListAsync();
+        return await _context.TutorProfiles.Include(t => t.Offers).Where(e => e.isActive == true && e.Offers.Any(p => p.Subject.Equals(subject) == true)).ToListAsync();
 
         }
         public async Task<List<TutorProfile>> listByModality(bool isVirtual)

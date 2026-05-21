@@ -30,8 +30,8 @@ namespace TutorMatch.Services
 
         public async Task<Offer> Create(Offer newOffer)
         {
-            int tutorExist = _context.TutorProfiles.Where(e => e.TutorId == newOffer.TutorProfileId).Count();
-            if (tutorExist == 0) throw new Exception("Event not found");
+            int tutorExist = await _context.TutorProfiles.Where(e => e.TutorId == newOffer.TutorProfileId).CountAsync();
+            if (tutorExist == 0) throw new Exception("Tutor not found");
 
             //Agregamos el registro a la lista
             _context.Offers.Add(newOffer);

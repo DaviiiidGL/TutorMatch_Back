@@ -12,8 +12,8 @@ using TutorMatch.DAO;
 namespace TutorMatch.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260318224601_InitialMig")]
-    partial class InitialMig
+    [Migration("20260521002206_InicialLimpia")]
+    partial class InicialLimpia
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -257,7 +257,7 @@ namespace TutorMatch.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("ConversationId")
+                    b.Property<Guid?>("ConversationId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateOnly>("Date")
@@ -272,7 +272,7 @@ namespace TutorMatch.Migrations
                     b.Property<double>("Price")
                         .HasColumnType("float");
 
-                    b.Property<Guid>("ReviewId")
+                    b.Property<Guid?>("ReviewId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<TimeOnly>("StarTime")
@@ -420,8 +420,8 @@ namespace TutorMatch.Migrations
 
                     b.Property<string>("Bio")
                         .IsRequired()
-                        .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
                     b.Property<string>("CiudadPais")
                         .IsRequired()
@@ -514,8 +514,7 @@ namespace TutorMatch.Migrations
                     b.HasOne("TutorMatch.Models.Conversation", "Conversation")
                         .WithMany()
                         .HasForeignKey("ConversationId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("TutorMatch.Models.Offer", "Offer")
                         .WithMany()
@@ -525,9 +524,7 @@ namespace TutorMatch.Migrations
 
                     b.HasOne("TutorMatch.Models.Review", "Review")
                         .WithMany()
-                        .HasForeignKey("ReviewId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ReviewId");
 
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "Student")
                         .WithMany()

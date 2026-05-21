@@ -35,15 +35,11 @@ namespace TutorMatch.Models
         public Status Status { get; set; } = Status.Pendiente;
 
         public double Price { get; set; }
-
-        [Required]
-        public Guid ReviewId { get; set; }
+        public Guid? ReviewId { get; set; }
 
         [ForeignKey("ReviewId")]
         public Review? Review { get; set; }
-
-        [Required]
-        public Guid ConversationId { get; set; }
+        public Guid? ConversationId { get; set; }
 
         [ForeignKey("ConversationId")]
         public Conversation? Conversation { get; set; }

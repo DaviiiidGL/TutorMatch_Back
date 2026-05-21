@@ -17,7 +17,7 @@ namespace TutorMatch.Models
 
         public List<Availability> Availabilities { get; set; }
 
-        [Required][MinLength(10)][MaxLength(10)]
+        [Required][MinLength(10)][MaxLength(500)]
         public string Bio { get; set; }
 
         public List<Review> Reviews { get; set; }

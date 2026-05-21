@@ -16,10 +16,6 @@ namespace TutorMatch.Controllers
         {
             _bookingService = bookingService;
         }
-        public IActionResult Index()
-        {
-            return View();
-        }
 
         [HttpGet]
         [AllowAnonymous]
