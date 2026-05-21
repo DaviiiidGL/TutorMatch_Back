@@ -46,11 +46,26 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IBookingService, BookingService>();
 builder.Services.AddScoped<IOfferService, OfferService>();
 builder.Services.AddScoped<ITutorProfileService, TutorProfileService>();
+builder.Services.AddScoped<IReviewService, ReviewService>();
+builder.Services.AddScoped<IMessageService, MessageService>();
 
 // Añadir los servicios aquí
 
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter());
+});
 builder.Services.AddOpenApi();
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("ReactApp", policy =>
+    {
+        policy.AllowAnyOrigin() // En producción se pone la URL de tu front
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
 
 var app = builder.Build();
 
@@ -61,6 +76,10 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseCors("ReactApp");
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 
@@ -97,5 +116,20 @@ using (var scope = app.Services.CreateScope())
     }
 }
 
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    try
+    {
+        var context = services.GetRequiredService<TutorMatch.DAO.ApplicationDbContext>();
+        context.Database.Migrate();
+
+        await TutorMatch.Data.DbSeeder.SeedAsync(services);
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"Ocurrió un error al sembrar la base de datos: {ex.Message}");
+    }
+}
 
 app.Run();

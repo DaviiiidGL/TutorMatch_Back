@@ -10,10 +10,6 @@ namespace TutorMatch.Controllers
     [ApiController]
     public class TutorProfileController : Controller
     {
-        public IActionResult Index()
-        {
-            return View();
-        }
 
         private readonly ITutorProfileService _tutorProfileService;
         public TutorProfileController(ITutorProfileService tutorProfileService)

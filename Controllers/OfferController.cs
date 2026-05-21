@@ -16,10 +16,6 @@ namespace TutorMatch.Controllers
         {
             _offerService = offerService;
         }
-        public IActionResult Index()
-        {
-            return View();
-        }
         
         [HttpGet]
         [AllowAnonymous]

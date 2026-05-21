@@ -17,7 +17,7 @@ namespace TutorMatch.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "10.0.5")
+                .HasAnnotation("ProductVersion", "10.0.8")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -254,7 +254,7 @@ namespace TutorMatch.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("ConversationId")
+                    b.Property<Guid?>("ConversationId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateOnly>("Date")
@@ -269,7 +269,7 @@ namespace TutorMatch.Migrations
                     b.Property<double>("Price")
                         .HasColumnType("float");
 
-                    b.Property<Guid>("ReviewId")
+                    b.Property<Guid?>("ReviewId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<TimeOnly>("StarTime")
@@ -389,12 +389,29 @@ namespace TutorMatch.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid>("BookingId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("Comment")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("ReviewCount")
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("Rating")
                         .HasColumnType("int");
+
+                    b.Property<string>("StudentId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("StudentName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("TutorId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid?>("TutorProfileTutorId")
                         .HasColumnType("uniqueidentifier");
@@ -417,8 +434,11 @@ namespace TutorMatch.Migrations
 
                     b.Property<string>("Bio")
                         .IsRequired()
-                        .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<int>("CancelCount")
+                        .HasColumnType("int");
 
                     b.Property<string>("CiudadPais")
                         .IsRequired()
@@ -427,8 +447,17 @@ namespace TutorMatch.Migrations
                     b.Property<double>("HourlyRate")
                         .HasColumnType("float");
 
+                    b.Property<bool>("IsHidden")
+                        .HasColumnType("bit");
+
                     b.Property<bool>("IsVirtual")
                         .HasColumnType("bit");
+
+                    b.Property<int>("PenaltyScore")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ReviewCount")
+                        .HasColumnType("int");
 
                     b.Property<string>("UserId")
                         .IsRequired()
@@ -511,8 +540,7 @@ namespace TutorMatch.Migrations
                     b.HasOne("TutorMatch.Models.Conversation", "Conversation")
                         .WithMany()
                         .HasForeignKey("ConversationId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("TutorMatch.Models.Offer", "Offer")
                         .WithMany()
@@ -522,9 +550,7 @@ namespace TutorMatch.Migrations
 
                     b.HasOne("TutorMatch.Models.Review", "Review")
                         .WithMany()
-                        .HasForeignKey("ReviewId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ReviewId");
 
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "Student")
                         .WithMany()

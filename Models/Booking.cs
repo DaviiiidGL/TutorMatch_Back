@@ -32,18 +32,14 @@ namespace TutorMatch.Models
         public DateOnly Date { get; set; }
 
         [Required]
-        public Status Status { get; set; } = Status.Pendiente;
+        public Status Status { get; set; } = Status.Pending;
 
         public double Price { get; set; }
-
-        [Required]
-        public Guid ReviewId { get; set; }
+        public Guid? ReviewId { get; set; }
 
         [ForeignKey("ReviewId")]
         public Review? Review { get; set; }
-
-        [Required]
-        public Guid ConversationId { get; set; }
+        public Guid? ConversationId { get; set; }
 
         [ForeignKey("ConversationId")]
         public Conversation? Conversation { get; set; }

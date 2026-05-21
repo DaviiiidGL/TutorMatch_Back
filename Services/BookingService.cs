@@ -24,12 +24,17 @@ namespace TutorMatch.Services
 
         public async Task<List<Booking>> listByTutor(Guid id)
         {
-            return await _context.Bookings.Where(e => e.isActive && e.Offer.TutorProfileId == id).ToListAsync();
+            return await _context.Bookings.Include(e => e.Offer).Where(e => e.isActive && e.Offer.TutorProfileId == id).ToListAsync();
         }
 
         public async Task<Booking> Create(Booking newBooking)
         {
-            //Agregamos el registro a la lista
+            var offer = await _context.Offers.FindAsync(newBooking.OfferId);
+            if (offer == null) throw new Exception("La oferta no existe.");
+
+            bool overlaps = await isReserved(offer.TutorProfileId, newBooking.Date, newBooking.StarTime, newBooking.EndTime);
+            if (overlaps) throw new Exception("El tutor ya tiene una reserva en ese horario.");
+
             _context.Bookings.Add(newBooking);
             await _context.SaveChangesAsync();
             return newBooking;
@@ -81,7 +86,7 @@ namespace TutorMatch.Services
         public async Task<bool> isReserved(Guid id, DateOnly date, TimeOnly horaInicio, TimeOnly horaFinal)
         {
 
-            return await _context.Bookings.Where(p => p.isActive && p.Offer.TutorProfileId == id && p.Date == date && (
+            return await _context.Bookings.Include(p=>p.Offer).Where(p => p.isActive && p.Offer.TutorProfileId == id && p.Date == date && (
         (p.StarTime <= horaInicio && p.EndTime > horaInicio) ||
         (p.StarTime < horaFinal && p.EndTime >= horaFinal) ||
         (p.StarTime >= horaInicio && p.EndTime <= horaFinal)

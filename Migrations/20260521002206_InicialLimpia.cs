@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace TutorMatch.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialMig : Migration
+    public partial class InicialLimpia : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -162,7 +162,7 @@ namespace TutorMatch.Migrations
                 {
                     TutorId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Bio = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
+                    Bio = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
                     IsVirtual = table.Column<bool>(type: "bit", nullable: false),
                     HourlyRate = table.Column<double>(type: "float", nullable: false),
                     AverageRating = table.Column<double>(type: "float", nullable: false),
@@ -308,8 +308,8 @@ namespace TutorMatch.Migrations
                     Date = table.Column<DateOnly>(type: "date", nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false),
                     Price = table.Column<double>(type: "float", nullable: false),
-                    ReviewId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ConversationId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ReviewId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    ConversationId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     isActive = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
@@ -337,8 +337,7 @@ namespace TutorMatch.Migrations
                         name: "FK_Bookings_Reviews_ReviewId",
                         column: x => x.ReviewId,
                         principalTable: "Reviews",
-                        principalColumn: "ReviewId",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "ReviewId");
                 });
 
             migrationBuilder.CreateIndex(

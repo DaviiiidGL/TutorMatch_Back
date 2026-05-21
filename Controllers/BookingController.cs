@@ -1,66 +1,111 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
+using TutorMatch.DAO;
 using TutorMatch.Interfaces;
 using TutorMatch.Models;
-using TutorMatch.Services;
+using TutorMatch.Models.Enums;
 
 namespace TutorMatch.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
-    [Authorize(Roles = "Admin")]
-    public class BookingController : Controller
+    [Route("api/[controller]")] // <-- ¡Plural!
+    [Authorize]
+    public class BookingController : ControllerBase
     {
         private readonly IBookingService _bookingService;
-        public BookingController(IBookingService bookingService)
+        private readonly ApplicationDbContext _context; // Lo inyectamos para consultas rápidas
+
+        public BookingController(IBookingService bookingService, ApplicationDbContext context)
         {
             _bookingService = bookingService;
+            _context = context;
         }
-        public IActionResult Index()
+
+        // --- ENDPOINTS DEL ESTUDIANTE ---
+
+        [HttpGet("mine")]
+        public async Task<IActionResult> GetMyBookings([FromQuery] string? status)
         {
-            return View();
+            var studentId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var query = _context.Bookings.Include(b => b.Offer).Where(b => b.StudentId == studentId);
+
+            if (!string.IsNullOrEmpty(status))
+            {
+                // Convierte "accepted" a Status.Accepted
+                if (Enum.TryParse<Status>(status, true, out var parsedStatus))
+                {
+                    query = query.Where(b => b.Status == parsedStatus);
+                }
+            }
+
+            return Ok(await query.ToListAsync());
         }
 
-        [HttpGet]
-        [AllowAnonymous]
-        public async Task<IActionResult> GetAll() => Ok(await _bookingService.GetAll());
+        // --- ENDPOINTS DEL TUTOR ---
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> getById(Guid id)
+        [HttpGet("pending")]
+        public async Task<IActionResult> GetPendingBookings()
         {
-            var offer = await _bookingService.getById(id);
-            //Se refactoriza condicion por una operación ternaria o si corto
-            return offer != null ? Ok(offer) : NotFound();
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            // Busca las reservas donde el perfil del tutor pertenece a este usuario
+            var bookings = await _context.Bookings
+                .Include(b => b.Offer).ThenInclude(o => o.TutorProfile)
+                .Where(b => b.Offer.TutorProfile.UserId == userId && b.Status == Status.Pending)
+                .ToListAsync();
+
+            return Ok(bookings);
         }
 
+        [HttpGet("accepted")]
+        public async Task<IActionResult> GetTutorAcceptedBookings()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var bookings = await _context.Bookings
+                .Include(b => b.Offer).ThenInclude(o => o.TutorProfile)
+                .Where(b => b.Offer.TutorProfile.UserId == userId && b.Status == Status.Accepted)
+                .ToListAsync();
+
+            return Ok(bookings);
+        }
+
+        [HttpPatch("{id}/accept")]
+        public async Task<IActionResult> AcceptBooking(Guid id)
+        {
+            var booking = await _context.Bookings.FindAsync(id);
+            if (booking == null) return NotFound();
+
+            booking.Status = Status.Accepted;
+            await _context.SaveChangesAsync();
+            return Ok(booking);
+        }
+
+        [HttpPatch("{id}/reject")]
+        public async Task<IActionResult> RejectBooking(Guid id)
+        {
+            var booking = await _context.Bookings.FindAsync(id);
+            if (booking == null) return NotFound();
+
+            booking.Status = Status.Rejected;
+            await _context.SaveChangesAsync();
+            return Ok(booking);
+        }
+
+        // --- ENDPOINT GENERAL PARA CREAR (El que ya tenías pero adaptado) ---
         [HttpPost]
-        [Authorize(Roles = "Student")]
-        public async Task<IActionResult> Create([FromBody] Booking newBooking)
+        public async Task<IActionResult> CreateBooking([FromBody] Booking newBooking)
         {
-
-            var createdBooking = await _bookingService.Create(newBooking);
-            return CreatedAtAction(nameof(getById), new { id = createdBooking.BookingId }, createdBooking);
-        }
-
-        [HttpPut]
-        public async Task<IActionResult> Edit(Guid id, [FromBody] Booking editedBooking)
-        {
-
-            return await _bookingService.Update(id, editedBooking) ? NoContent() : NotFound();
-        }
-
-        [HttpPatch("{id}/change-accept")]
-        [Authorize(Roles = "Tutor")]
-        public async Task<IActionResult> Accept(Guid id)
-        {
-            return await _bookingService.Accept(id) ? Ok("Se ha aceptado la reserva") : NotFound();
-        }
-
-        [HttpPatch("{id}/change-decline")]
-        [Authorize(Roles = "Tutor")]
-        public async Task<IActionResult> Decline(Guid id)
-        {
-            return await _bookingService.Decline(id) ? Ok("Se ha rechazado la reserva") : NotFound();
+            try
+            {
+                newBooking.StudentId = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? newBooking.StudentId;
+                var created = await _bookingService.Create(newBooking);
+                return Ok(created);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
     }
 }

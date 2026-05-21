@@ -17,7 +17,7 @@ namespace TutorMatch.Models
 
         public List<Availability> Availabilities { get; set; }
 
-        [Required][MinLength(10)][MaxLength(10)]
+        [Required][MinLength(10)][MaxLength(500)]
         public string Bio { get; set; }
 
         public List<Review> Reviews { get; set; }
@@ -35,6 +35,9 @@ namespace TutorMatch.Models
 
         [Required]
         public bool isActive { get; set; } = true;
-
+        public int ReviewCount { get; set; } = 0;
+        public int PenaltyScore { get; set; } = 0;
+        public int CancelCount { get; set; } = 0;
+        public bool IsHidden { get; set; } = false;
     }
 }
