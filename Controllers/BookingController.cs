@@ -10,7 +10,7 @@ using TutorMatch.Models.Enums;
 namespace TutorMatch.Controllers
 {
     [ApiController]
-    [Route("api/bookings")] // <-- ¡Plural!
+    [Route("api/[controller]")] // <-- ¡Plural!
     [Authorize]
     public class BookingController : ControllerBase
     {

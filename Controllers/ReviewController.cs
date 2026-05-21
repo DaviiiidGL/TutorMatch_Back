@@ -7,7 +7,7 @@ using TutorMatch.Models.DTOs;
 namespace TutorMatch.Controllers
 {
     [ApiController]
-    [Route("api/reviews")] // <-- ¡Plural para coincidir con el front!
+    [Route("api/[controller]")]
     [Authorize]
     public class ReviewController : ControllerBase
     {
